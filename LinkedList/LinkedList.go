@@ -36,7 +36,6 @@ func CreateAnyTypeSlice(slice interface{}) ([]interface{}, bool) {
 // check if a slice
 func isSlice(arg interface{}) (val reflect.Value, ok bool) {
 	val = reflect.ValueOf(arg)
-
 	if val.Kind() == reflect.Slice {
 		ok = true
 	}
@@ -45,27 +44,16 @@ func isSlice(arg interface{}) (val reflect.Value, ok bool) {
 }
 
 // Create create a LinkedList
-func (linkedList *LinkedNode) Create(arr interface{}) (err error) {
+func (linkedList *LinkedNode) Create(arr interface{}) error {
 	// converse interface{} to slice
 	slice, ok := CreateAnyTypeSlice(arr)
 	if !ok {
 		return fmt.Errorf("not a slice")
 	}
 
-	if len(slice) == 0 {
-		return fmt.Errorf("slice's length is 0")
-	}
-
-	linkedList.val = slice[0]
-
-	pNode := new(LinkedNode)
-	linkedList.next = pNode
+	pNode := linkedList
 
 	for i, value := range slice {
-		// jump off the first node
-		if i == 0 {
-			continue
-		}
 		pNode.val = value
 
 		// not the last node
@@ -75,7 +63,7 @@ func (linkedList *LinkedNode) Create(arr interface{}) (err error) {
 		}
 	}
 
-	return
+	return nil
 }
 
 // Print print all nodes' value in the linkedlist
@@ -87,7 +75,7 @@ func (linkedList *LinkedNode) Print() {
 }
 
 // Add add a node at the end of the linkedlist
-func (linkedList *LinkedNode) Add(val interface{}) (err error) {
+func (linkedList *LinkedNode) Add(val interface{}) error {
 	node := linkedList
 	for node.next != nil {
 		node = node.next
@@ -96,11 +84,11 @@ func (linkedList *LinkedNode) Add(val interface{}) (err error) {
 	node.next.val = val
 	node.next.next = nil
 
-	return
+	return nil
 }
 
 // Modify modify a node in the linkedlist
-func (linkedList *LinkedNode) Modify(oldVal interface{}, newVal interface{}, pos int) (err error) {
+func (linkedList *LinkedNode) Modify(oldVal interface{}, newVal interface{}, pos int) error {
 	node := linkedList
 	var i int = 0 // the i-th element that satisfies the condition
 	for node != nil {
@@ -108,7 +96,7 @@ func (linkedList *LinkedNode) Modify(oldVal interface{}, newVal interface{}, pos
 			i++
 			if i == pos {
 				node.val = newVal
-				return
+				return nil
 			}
 		}
 		node = node.next
@@ -130,7 +118,8 @@ func (linkedList *LinkedNode) Search(value interface{}, pos int) (ok bool, err e
 		}
 		node = node.next
 	}
-	return false, fmt.Errorf("not found %v-th value %v", pos, value)
+	err = fmt.Errorf("not found %v-th value %v", pos, value)
+	return
 }
 
 // Delete delete a node of this linkedlist
@@ -148,5 +137,7 @@ func (linkedList *LinkedNode) Delete(value interface{}, pos int) (ok bool, err e
 		}
 		node = node.next
 	}
-	return false, fmt.Errorf("not found %v-th value %v", pos, value)
+
+	err = fmt.Errorf("not found %v-th value %v", pos, value)
+	return
 }
