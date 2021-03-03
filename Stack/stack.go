@@ -88,6 +88,8 @@ func (stack *Stack) GetTopValue() interface{} {
 
 // Push push a new node into the stack(on the top)
 func (stack *Stack) Push(val interface{}) error {
+	stack.lock.Lock()
+	defer stack.lock.Unlock()
 	pNode := new(node)
 	pNode.val = val
 	pNode.prev = stack.top
@@ -98,6 +100,8 @@ func (stack *Stack) Push(val interface{}) error {
 
 // Pop pop the top node of the stack
 func (stack *Stack) Pop() (ok bool, err error) {
+	stack.lock.Lock()
+	defer stack.lock.Unlock()
 	stack.top = stack.top.prev
 	stack.length--
 	ok = true
