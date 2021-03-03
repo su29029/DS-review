@@ -102,6 +102,10 @@ func (stack *Stack) Push(val interface{}) error {
 func (stack *Stack) Pop() (ok bool, err error) {
 	stack.lock.Lock()
 	defer stack.lock.Unlock()
+	if stack.top == nil {
+		err = fmt.Errorf("pop a empty stack")
+		return
+	}
 	stack.top = stack.top.prev
 	stack.length--
 	ok = true
