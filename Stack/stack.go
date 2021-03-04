@@ -103,7 +103,7 @@ func (stack *Stack) Pop() (ok bool, err error) {
 	stack.lock.Lock()
 	defer stack.lock.Unlock()
 	if stack.top == nil {
-		err = fmt.Errorf("pop a empty stack")
+		err = fmt.Errorf("pop an empty stack")
 		return
 	}
 	stack.top = stack.top.prev

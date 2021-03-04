@@ -13,4 +13,10 @@ func main() {
 	fmt.Println(stack.GetTopValue())
 	stack.Pop()
 	fmt.Println(stack.GetTopValue())
+	stack.Pop()
+	fmt.Println(stack.GetTopValue())
+	stack.Pop()
+	fmt.Println(stack.GetTopValue())
+	stack.Pop()
+	fmt.Println(stack.GetTopValue())
 }
