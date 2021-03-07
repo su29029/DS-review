@@ -70,7 +70,6 @@ func CreateByPreOrderSequence(arr interface{}) *BinaryTree {
 	flag := -1
 	binaryTree := create(slice, &flag)
 
-	// fmt.Println(binaryTree.TraversePreOrder())
 	return binaryTree
 }
 
@@ -93,6 +92,7 @@ func CreateByTwoSequences(seq1 interface{}, seq2 interface{}, flag int) *BinaryT
 
 	var binaryTree = new(BinaryTree)
 	var inPos map[interface{}]int
+	inPos = make(map[interface{}]int)
 
 	createByPreAndIn = func(preOrder []interface{}, preStart int, preEnd int, inStart int, inPos map[interface{}]int) *BinaryTree {
 		if preStart > preEnd {
@@ -109,7 +109,18 @@ func CreateByTwoSequences(seq1 interface{}, seq2 interface{}, flag int) *BinaryT
 	}
 
 	createByInAndPost = func(postOrder []interface{}, postStart int, postEnd int, inStart int, inPost map[interface{}]int) *BinaryTree {
-		return nil
+		if postStart > postEnd {
+			return nil
+		}
+
+		node := new(BinaryTree)
+		node.val = postOrder[postEnd]
+		rootIdx := inPos[postOrder[postEnd]]
+		leftLen := rootIdx - inStart
+
+		node.left = createByInAndPost(postOrder, postStart, postStart+leftLen-1, inStart, inPos)
+		node.right = createByInAndPost(postOrder, postStart+leftLen, postEnd-1, rootIdx+1, inPos)
+		return node
 	}
 
 	for i := 0; i < len(slice1); i++ {
