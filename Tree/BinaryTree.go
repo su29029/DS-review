@@ -88,25 +88,39 @@ func CreateByTwoSequences(seq1 interface{}, seq2 interface{}, flag int) *BinaryT
 		return nil
 	}
 
-	var createByPreAndIn func([]interface{}, []interface{}, *int) *BinaryTree
-	var createByInAndPost func([]interface{}, []interface{}, *int) *BinaryTree
-	// var locate func([]interface{}, []interface{}, *int) int
+	var createByPreAndIn func([]interface{}, int, int, int, map[interface{}]int) *BinaryTree
+	var createByInAndPost func([]interface{}, int, int, int, map[interface{}]int) *BinaryTree
+
 	var binaryTree = new(BinaryTree)
-	var n int = -1
+	var inPos map[interface{}]int
 
-	createByPreAndIn = func(preOrder []interface{}, inOrder []interface{}, n *int) *BinaryTree {
+	createByPreAndIn = func(preOrder []interface{}, preStart int, preEnd int, inStart int, inPos map[interface{}]int) *BinaryTree {
+		if preStart > preEnd {
+			return nil
+		}
+		node := new(BinaryTree)
+		node.val = preOrder[preStart]
+		rootIdx := inPos[preOrder[preStart]]
+		leftLen := rootIdx - inStart
 
+		node.left = createByPreAndIn(preOrder, preStart+1, preStart+leftLen, inStart, inPos)
+		node.right = createByPreAndIn(preOrder, preStart+leftLen+1, preEnd, rootIdx+1, inPos)
+		return node
 	}
 
-	createByInAndPost = func(inOrder []interface{}, postOrder []interface{}, n *int) *BinaryTree {
+	createByInAndPost = func(postOrder []interface{}, postStart int, postEnd int, inStart int, inPost map[interface{}]int) *BinaryTree {
+		return nil
+	}
 
+	for i := 0; i < len(slice1); i++ {
+		inPos[slice1[i]] = i
 	}
 
 	if flag == 1 {
-		binaryTree = createByPreAndIn(slice1, slice2, &n)
+		binaryTree = createByPreAndIn(slice1, 0, len(slice1)-1, 0, inPos)
 	}
 	if flag == 2 {
-		binaryTree = createByInAndPost(slice1, slice2, &n)
+		binaryTree = createByInAndPost(slice2, 0, len(slice2)-1, 0, inPos)
 	}
 
 	return binaryTree
