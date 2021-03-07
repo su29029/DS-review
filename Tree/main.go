@@ -12,4 +12,7 @@ func main() {
 	fmt.Println(binaryTree2.TraversePreOrder())
 	binaryTree3 := CreateByTwoSequences([]interface{}{4, 2, 5, 1, 7, 6, 8, 3}, []interface{}{4, 5, 2, 7, 8, 6, 3, 1}, 2)
 	fmt.Println(binaryTree3.TraversePreOrder())
+	fmt.Println(binaryTree3.IterTraversePreOrder())
+	fmt.Println(binaryTree3.IterTraverseInOrder())
+	fmt.Println(binaryTree3.IterTraversePostOrder())
 }

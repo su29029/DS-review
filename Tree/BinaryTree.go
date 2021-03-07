@@ -123,6 +123,7 @@ func CreateByTwoSequences(seq1 interface{}, seq2 interface{}, flag int) *BinaryT
 		return node
 	}
 
+	// save the inOrder's node, instead of traversing the inOrder sequence in the recursion
 	for i := 0; i < len(slice1); i++ {
 		inPos[slice1[i]] = i
 	}
@@ -139,7 +140,6 @@ func CreateByTwoSequences(seq1 interface{}, seq2 interface{}, flag int) *BinaryT
 
 // TraversePreOrder traverse in preorder sequence
 func (binaryTree *BinaryTree) TraversePreOrder() interface{} {
-
 	var traverse func(root *BinaryTree)
 	var res []interface{}
 	traverse = func(root *BinaryTree) {
@@ -175,7 +175,6 @@ func (binaryTree *BinaryTree) TraverseInOrder() interface{} {
 
 // TraversePostOrder traverse in postorder sequence
 func (binaryTree *BinaryTree) TraversePostOrder() interface{} {
-
 	var traverse func(root *BinaryTree)
 	var res []interface{}
 	traverse = func(root *BinaryTree) {
@@ -188,5 +187,76 @@ func (binaryTree *BinaryTree) TraversePostOrder() interface{} {
 	}
 
 	traverse(binaryTree)
+	return res
+}
+
+// IterTraversePreOrder Iteratively traverse binaryTree in preorder sequence
+func (binaryTree *BinaryTree) IterTraversePreOrder() interface{} {
+	var res []interface{}
+	var stack []*BinaryTree
+
+	root := binaryTree
+	for root != nil || len(stack) > 0 {
+		for root != nil {
+			res = append(res, root.val)
+			stack = append(stack, root)
+			root = root.left
+		}
+		if len(stack) != 0 {
+			root = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			root = root.right
+		}
+	}
+	return res
+}
+
+// IterTraverseInOrder Iteratively traverse binaryTree in inorder sequence
+func (binaryTree *BinaryTree) IterTraverseInOrder() interface{} {
+	var res []interface{}
+	var stack []*BinaryTree
+
+	root := binaryTree
+	for root != nil || len(stack) > 0 {
+		for root != nil {
+			stack = append(stack, root)
+			root = root.left
+		}
+		if len(stack) != 0 {
+			root = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			res = append(res, root.val)
+			root = root.right
+		}
+	}
+	return res
+}
+
+// IterTraversePostOrder Iteratively traverse binaryTree in postorder sequence
+func (binaryTree *BinaryTree) IterTraversePostOrder() interface{} {
+	var res []interface{}
+	var stack []*BinaryTree
+
+	var cur *BinaryTree
+	var pre *BinaryTree = nil
+
+	root := binaryTree
+	stack = append(stack, root)
+	for len(stack) != 0 {
+		cur = stack[len(stack)-1]
+
+		if (cur.left == nil && cur.right == nil) || (pre != nil && (pre == cur.left || pre == cur.right)) {
+			res = append(res, cur.val)
+			stack = stack[:len(stack)-1]
+			pre = cur
+		} else {
+			if cur.right != nil {
+				stack = append(stack, cur.right)
+			}
+			if cur.left != nil {
+				stack = append(stack, cur.left)
+			}
+		}
+	}
 	return res
 }
