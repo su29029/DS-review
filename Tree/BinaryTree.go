@@ -75,8 +75,41 @@ func CreateByPreOrderSequence(arr interface{}) *BinaryTree {
 }
 
 // CreateByTwoSequences create a binary tree by two sequences(preorder sequence/inorder sequence which flag is 1, and inorder sequence/postorder sequence which flag is 2)
-func (binaryTree *BinaryTree) CreateByTwoSequences(seq1 interface{}, seq2 interface{}, flag int) error {
-	return nil
+func CreateByTwoSequences(seq1 interface{}, seq2 interface{}, flag int) *BinaryTree {
+	slice1, ok1 := CreateAnyTypeSlice(seq1)
+	slice2, ok2 := CreateAnyTypeSlice(seq2)
+	if !ok1 || !ok2 {
+		fmt.Errorf("not slices")
+		return nil
+	}
+
+	if len(slice1) != len(slice2) {
+		fmt.Errorf("invalid parameters")
+		return nil
+	}
+
+	var createByPreAndIn func([]interface{}, []interface{}, *int) *BinaryTree
+	var createByInAndPost func([]interface{}, []interface{}, *int) *BinaryTree
+	// var locate func([]interface{}, []interface{}, *int) int
+	var binaryTree = new(BinaryTree)
+	var n int = -1
+
+	createByPreAndIn = func(preOrder []interface{}, inOrder []interface{}, n *int) *BinaryTree {
+
+	}
+
+	createByInAndPost = func(inOrder []interface{}, postOrder []interface{}, n *int) *BinaryTree {
+
+	}
+
+	if flag == 1 {
+		binaryTree = createByPreAndIn(slice1, slice2, &n)
+	}
+	if flag == 2 {
+		binaryTree = createByInAndPost(slice1, slice2, &n)
+	}
+
+	return binaryTree
 }
 
 // TraversePreOrder traverse in preorder sequence
