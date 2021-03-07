@@ -87,40 +87,50 @@ func CreateByTwoSequences(seq1 interface{}, seq2 interface{}, flag int) *BinaryT
 		return nil
 	}
 
-	var createByPreAndIn func([]interface{}, int, int, int, map[interface{}]int) *BinaryTree
-	var createByInAndPost func([]interface{}, int, int, int, map[interface{}]int) *BinaryTree
+	var createByPreAndIn func(seq1 []interface{}, seq2 []interface{}) *BinaryTree
+	var createByInAndPost func(seq1 []interface{}, seq2 []interface{}) *BinaryTree
 
 	var binaryTree = new(BinaryTree)
 	var inPos map[interface{}]int
 	inPos = make(map[interface{}]int)
 
-	createByPreAndIn = func(preOrder []interface{}, preStart int, preEnd int, inStart int, inPos map[interface{}]int) *BinaryTree {
-		if preStart > preEnd {
+	createByPreAndIn = func(seq1 []interface{}, seq2 []interface{}) *BinaryTree {
+		if len(seq1) == 0 {
 			return nil
 		}
-		node := new(BinaryTree)
-		node.val = preOrder[preStart]
-		rootIdx := inPos[preOrder[preStart]]
-		leftLen := rootIdx - inStart
 
-		node.left = createByPreAndIn(preOrder, preStart+1, preStart+leftLen, inStart, inPos)
-		node.right = createByPreAndIn(preOrder, preStart+leftLen+1, preEnd, rootIdx+1, inPos)
-		return node
+		root := &BinaryTree{seq1[0], nil, nil}
+
+		i := 0
+		for ; i < len(seq2); i++ {
+			if seq2[i] == seq1[0] {
+				break
+			}
+		}
+
+		root.left = createByPreAndIn(seq1[1:i+1], seq2[:i])
+		root.right = createByPreAndIn(seq1[i+1:], seq2[i+1:])
+
+		return root
 	}
 
-	createByInAndPost = func(postOrder []interface{}, postStart int, postEnd int, inStart int, inPost map[interface{}]int) *BinaryTree {
-		if postStart > postEnd {
+	createByInAndPost = func(seq1 []interface{}, seq2 []interface{}) *BinaryTree {
+		if len(seq2) == 0 {
 			return nil
 		}
 
-		node := new(BinaryTree)
-		node.val = postOrder[postEnd]
-		rootIdx := inPos[postOrder[postEnd]]
-		leftLen := rootIdx - inStart
+		root := &BinaryTree{seq2[len(seq2)-1], nil, nil}
 
-		node.left = createByInAndPost(postOrder, postStart, postStart+leftLen-1, inStart, inPos)
-		node.right = createByInAndPost(postOrder, postStart+leftLen, postEnd-1, rootIdx+1, inPos)
-		return node
+		i := 0
+		for ; i < len(seq1); i++ {
+			if seq1[i] == seq2[len(seq2)-1] {
+				break
+			}
+		}
+
+		root.left = createByInAndPost(seq1[:i], seq2[:i])
+		root.right = createByInAndPost(seq1[i+1:], seq2[i:len(seq1)-1])
+		return root
 	}
 
 	// save the inOrder's node, instead of traversing the inOrder sequence in the recursion
@@ -129,10 +139,10 @@ func CreateByTwoSequences(seq1 interface{}, seq2 interface{}, flag int) *BinaryT
 	}
 
 	if flag == 1 {
-		binaryTree = createByPreAndIn(slice1, 0, len(slice1)-1, 0, inPos)
+		binaryTree = createByPreAndIn(slice1, slice2)
 	}
 	if flag == 2 {
-		binaryTree = createByInAndPost(slice2, 0, len(slice2)-1, 0, inPos)
+		binaryTree = createByInAndPost(slice1, slice2)
 	}
 
 	return binaryTree
